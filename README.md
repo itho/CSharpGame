@@ -6,7 +6,7 @@ This is a simple 'game' written in csharp. It is based off the official [asynchr
 Either use Visual Studio to build the executable to use the following command to build for Linux.
 ```
 # Linux
-dotnet publish -c release -r ubuntu.16.04-x64 --self-contained
+dotnet publish -c release -r linux-x64 --self-contained
 ```
 
 ## Usage
