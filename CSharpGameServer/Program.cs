@@ -35,7 +35,7 @@ namespace CSharpGameServer
             IPHostEntry ipHostInfo = Dns.GetHostEntry(Dns.GetHostName());
             IPAddress ipAddress = ipHostInfo.AddressList[0];
             IPEndPoint localEndPoint = new IPEndPoint(ipAddress, Int32.Parse(port));
-            Console.WriteLine($"Listening on {ipAddress}:{port}");
+            Console.WriteLine($"Local endpoint to listen on {ipAddress}:{port}");
 
             // Create a TCP/IP socket.  
             Socket listener = new Socket(ipAddress.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
@@ -43,12 +43,14 @@ namespace CSharpGameServer
             // Bind the socket to the local endpoint and listen for incoming connections.
             try
             {
+                Console.WriteLine("Binding to local endpoint.");
                 listener.Bind(localEndPoint);
                 listener.Listen(100);
 
                 while (true)
                 {
                     // Set the event to nonsignaled state.
+                    Console.WriteLine("Setting the event to nonsignaled state.");
                     allDone.Reset();
 
                     // Start an asynchronous socket to listen for connections.
@@ -160,6 +162,8 @@ namespace CSharpGameServer
 
         public static int Main(String[] args)
         {
+            Console.WriteLine("CSharpGameServer started with arguments: {0}", args);
+
             Parser.Default.ParseArguments<Options>(args)
                 .WithParsed<Options>(o => { StartListening(o.Port); });
 
