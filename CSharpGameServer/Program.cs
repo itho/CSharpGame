@@ -3,6 +3,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading;
+using CommandLine;
 
 namespace CSharpGameServer
 {
@@ -28,13 +29,13 @@ namespace CSharpGameServer
         {
         }
 
-        public static void StartListening()
+        public static void StartListening(string port)
         {
             // Establish the local endpoint for the socket.
             IPHostEntry ipHostInfo = Dns.GetHostEntry(Dns.GetHostName());
             IPAddress ipAddress = ipHostInfo.AddressList[0];
-            IPEndPoint localEndPoint = new IPEndPoint(ipAddress, 11000);
-            Console.WriteLine($"Listening on {ipAddress}:11000");
+            IPEndPoint localEndPoint = new IPEndPoint(ipAddress, Int32.Parse(port));
+            Console.WriteLine($"Listening on {ipAddress}:{port}");
 
             // Create a TCP/IP socket.  
             Socket listener = new Socket(ipAddress.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
@@ -151,9 +152,17 @@ namespace CSharpGameServer
             }
         }
 
+        public class Options
+        {
+            [Option('p', "port", Required = true, HelpText = "Port to listen on")]
+            public string Port { get; set; }
+        }
+
         public static int Main(String[] args)
         {
-            StartListening();
+            Parser.Default.ParseArguments<Options>(args)
+                .WithParsed<Options>(o => { StartListening(o.Port); });
+
             return 0;
         }
     }

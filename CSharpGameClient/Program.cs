@@ -22,9 +22,6 @@ namespace CSharpGameClient
 
     public class Program
     {
-        // The port number for the remote device.  
-        private const int port = 11000;
-
         // ManualResetEvent instances signal completion.  
         private static ManualResetEvent connectDone = new ManualResetEvent(false);
         private static ManualResetEvent sendDone = new ManualResetEvent(false);
@@ -33,7 +30,7 @@ namespace CSharpGameClient
         // The response from the remote device.  
         private static String response = String.Empty;
 
-        private static void StartClient(string ipAddressArg, string playerNameArg)
+        private static void StartClient(string ipAddressArg, string port, string playerNameArg)
         {
             // Connect to a remote device.  
             try
@@ -41,11 +38,9 @@ namespace CSharpGameClient
                 // Write the response to the console.  
                 Console.WriteLine("Hi {0}, let's see what you won!", playerNameArg);
 
-                // Establish the remote endpoint for the socket.  
-                //IPHostEntry ipHostInfo = Dns.GetHostEntry(Dns.GetHostName());
-                //IPAddress ipAddress = ipHostInfo.AddressList[0];
+                // Establish the remote endpoint for the socket.
                 IPAddress ipAddress = IPAddress.Parse(ipAddressArg);
-                IPEndPoint remoteEP = new IPEndPoint(ipAddress, port);
+                IPEndPoint remoteEP = new IPEndPoint(ipAddress, Int32.Parse(port));
 
                 // Create a TCP/IP socket.  
                 Socket client = new Socket(ipAddress.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
@@ -182,7 +177,9 @@ namespace CSharpGameClient
         public class Options
         {
             [Option('i', "ipAddress", Required = true, HelpText = "IP address of game-server")]
-            public string HostName { get; set; }
+            public string IpAddress { get; set; }
+            [Option('p', "port", Required = true, HelpText = "Port of game-server")]
+            public string Port { get; set; }
             [Option('n', "name", Required = true, HelpText = "Player name")]
             public string PlayerName { get; set; }
         }
@@ -190,7 +187,7 @@ namespace CSharpGameClient
         public static int Main(string[] args)
         {
             Parser.Default.ParseArguments<Options>(args)
-                .WithParsed<Options>(o => { StartClient(o.HostName, o.PlayerName); });
+                .WithParsed<Options>(o => { StartClient(o.IpAddress, o.Port, o.PlayerName); });
 
             return 0;
         }
