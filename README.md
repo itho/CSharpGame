@@ -17,5 +17,5 @@ To run the server just run the executable.
 
 Find the server IP address (printed to stdout on startup) and run the client.
 ```
-.\CSharpGameClient.exe -i <game-server-ip> -n <player-name>
+.\CSharpGameClient.exe -i <game_server_ip> -p <game_server_port> -n <player_name>
 ```
